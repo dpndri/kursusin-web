@@ -3,14 +3,28 @@
 ![Go](https://img.shields.io/badge/Go-1.24-blue)
 ![Gin](https://img.shields.io/badge/Gin-Framework-green)
 ![Status](https://img.shields.io/badge/Status-Completed-success)
+![Version](https://img.shields.io/badge/Version-v1.1.0-orange)
 
 ## Deskripsi
 
-KursusIn adalah aplikasi web berbasis Go yang digunakan untuk mengelola pendaftaran peserta pada berbagai program pelatihan digital. Sistem ini dikembangkan sebagai Tugas Besar Mata Kuliah Algoritma Pemrograman 2.
+KursusIn adalah aplikasi web untuk manajemen pendaftaran kursus yang dibangun menggunakan Go dan Gin Framework. Sistem ini memungkinkan admin mengelola peserta, kursus, dan bidang minat, serta mengimplementasikan algoritma pencarian dan pengurutan sebagai bagian dari Tugas Besar Mata Kuliah Algoritma Pemrograman 2.
 
 Aplikasi memungkinkan admin atau koordinator kursus untuk mengelola data peserta, data kursus, dan data bidang minat dalam satu sistem terintegrasi.
 
 ---
+
+## Features
+
+- CRUD Peserta
+- CRUD Kursus
+- CRUD Bidang Minat
+- Sequential Search
+- Binary Search
+- Selection Sort
+- Insertion Sort
+- Dashboard UI
+- Statistik Peserta
+- JSON Persistence
 
 ## Tampilan Aplikasi
 
@@ -111,6 +125,20 @@ Aplikasi memungkinkan admin atau koordinator kursus untuk mengelola data peserta
 ```text
 kursusin-web/
 │
+├── assets/
+│   ├── dashboard-page.jpeg
+│   ├── peserta-page.jpeg
+│   ├── peserta-form.jpeg
+│   ├── kursus-page.jpeg
+│   ├── kursus-form.jpeg
+│   ├── bidang-page.jpeg
+│   ├── bidang-form.jpeg
+│   └── statistik-page.jpeg
+│
+├── static/
+│   └── css/
+│       └── style.css
+│
 ├── data/
 │   └── kursusin.json
 │
@@ -130,8 +158,6 @@ kursusin-web/
 ├── go.sum
 └── README.md
 ```
-
----
 
 ## Cara Menjalankan
 
@@ -201,6 +227,14 @@ Digunakan untuk mengurutkan peserta berdasarkan nama peserta secara alfabetis.
 | Proyek      | Tugas Besar Sistem Pendaftaran Kursus Online Terpadu (KursusIn) |
 
 ---
+
+## Future Improvements
+
+- Authentication & Authorization
+- PostgreSQL Integration
+- Role-based Access Control
+- Deployment to Cloud Platform
+- Responsive Mobile Layout
 
 ## Lisensi
 
