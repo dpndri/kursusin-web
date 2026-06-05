@@ -1,5 +1,9 @@
 # KursusIn - Sistem Pendaftaran Kursus Online Terpadu
 
+![Go](https://img.shields.io/badge/Go-1.24-blue)
+![Gin](https://img.shields.io/badge/Gin-Framework-green)
+![Status](https://img.shields.io/badge/Status-Completed-success)
+
 ## Deskripsi
 
 KursusIn adalah aplikasi web berbasis Go yang digunakan untuk mengelola pendaftaran peserta pada berbagai program pelatihan digital. Sistem ini dikembangkan sebagai Tugas Besar Mata Kuliah Algoritma Pemrograman 2.
@@ -25,6 +29,19 @@ Aplikasi memungkinkan admin atau koordinator kursus untuk mengelola data peserta
 ### Statistik
 
 ![Statistik](assets/statistik.jpeg)
+
+## Progress
+
+- [x] CRUD Peserta
+- [x] CRUD Kursus
+- [x] CRUD Bidang Minat
+- [x] Sequential Search
+- [x] Binary Search
+- [x] Selection Sort
+- [x] Insertion Sort
+- [x] Statistik Peserta
+- [x] Penyimpanan JSON
+- [ ] Deployment
 
 ## Fitur Utama
 
