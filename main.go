@@ -57,30 +57,37 @@ func main() {
 	})
 	r.LoadHTMLGlob("templates/*")
 
-	r.GET("/", dashboard)
+	r.GET("/login", formLogin)
+	r.POST("/login", prosesLogin)
+	r.GET("/logout", logout)
 
-	r.GET("/peserta", tampilPeserta)
-	r.GET("/peserta/tambah", formTambahPeserta)
-	r.POST("/peserta/tambah", tambahPeserta)
-	r.GET("/peserta/edit/:id", formEditPeserta)
-	r.POST("/peserta/edit/:id", updatePeserta)
-	r.POST("/peserta/hapus/:id", hapusPeserta)
-	r.GET("/peserta/cari", cariPesertaSequential)
-	r.GET("/peserta/binary-search", cariPesertaBinary)
-	r.GET("/peserta/sort/id", sortPesertaByID)
-	r.GET("/peserta/sort/nama", sortPesertaByNama)
+	protected := r.Group("/")
+	protected.Use(authMiddleware())
 
-	r.GET("/kursus", tampilKursus)
-	r.GET("/kursus/tambah", formTambahKursus)
-	r.POST("/kursus/tambah", tambahKursus)
-	r.POST("/kursus/hapus/:id", hapusKursus)
+	protected.GET("/", dashboard)
 
-	r.GET("/bidang", tampilBidang)
-	r.GET("/bidang/tambah", formTambahBidang)
-	r.POST("/bidang/tambah", tambahBidang)
-	r.POST("/bidang/hapus/:id", hapusBidang)
+	protected.GET("/peserta", tampilPeserta)
+	protected.GET("/peserta/tambah", formTambahPeserta)
+	protected.POST("/peserta/tambah", tambahPeserta)
+	protected.GET("/peserta/edit/:id", formEditPeserta)
+	protected.POST("/peserta/edit/:id", updatePeserta)
+	protected.POST("/peserta/hapus/:id", hapusPeserta)
+	protected.GET("/peserta/cari", cariPesertaSequential)
+	protected.GET("/peserta/binary-search", cariPesertaBinary)
+	protected.GET("/peserta/sort/id", sortPesertaByID)
+	protected.GET("/peserta/sort/nama", sortPesertaByNama)
 
-	r.GET("/statistik", statistik)
+	protected.GET("/kursus", tampilKursus)
+	protected.GET("/kursus/tambah", formTambahKursus)
+	protected.POST("/kursus/tambah", tambahKursus)
+	protected.POST("/kursus/hapus/:id", hapusKursus)
+
+	protected.GET("/bidang", tampilBidang)
+	protected.GET("/bidang/tambah", formTambahBidang)
+	protected.POST("/bidang/tambah", tambahBidang)
+	protected.POST("/bidang/hapus/:id", hapusBidang)
+
+	protected.GET("/statistik", statistik)
 
 	port := os.Getenv("PORT")
 
@@ -129,6 +136,47 @@ func saveData() {
 	mu.Lock()
 	defer mu.Unlock()
 	mustSaveDataLocked()
+}
+
+func authMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		cookie, err := c.Cookie("is_logged_in")
+
+		if err != nil || cookie != "true" {
+			c.Redirect(http.StatusSeeOther, "/login")
+			c.Abort()
+			return
+		}
+
+		c.Next()
+	}
+}
+
+func formLogin(c *gin.Context) {
+	c.HTML(http.StatusOK, "login.html", gin.H{
+		"title": "Login Admin",
+	})
+}
+
+func prosesLogin(c *gin.Context) {
+	username := c.PostForm("username")
+	password := c.PostForm("password")
+
+	if username == "admin" && password == "admin123" {
+		c.SetCookie("is_logged_in", "true", 3600, "/", "", false, true)
+		c.Redirect(http.StatusSeeOther, "/")
+		return
+	}
+
+	c.HTML(http.StatusUnauthorized, "login.html", gin.H{
+		"title": "Login Admin",
+		"error": "Username atau password salah",
+	})
+}
+
+func logout(c *gin.Context) {
+	c.SetCookie("is_logged_in", "", -1, "/", "", false, true)
+	c.Redirect(http.StatusSeeOther, "/login")
 }
 
 func dashboard(c *gin.Context) {
