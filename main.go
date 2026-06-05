@@ -81,7 +81,12 @@ func main() {
 
 	r.GET("/statistik", statistik)
 
-	r.Run(":8080")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	r.Run("0.0.0.0:" + port)
 }
 
 func mustLoadData() {
