@@ -3,7 +3,8 @@
 ![Go](https://img.shields.io/badge/Go-1.24-blue)
 ![Gin](https://img.shields.io/badge/Gin-Framework-green)
 ![Status](https://img.shields.io/badge/Status-Completed-success)
-![Version](https://img.shields.io/badge/Version-v1.1.0-orange)
+![Version](https://img.shields.io/badge/Version-v1.2.0-orange)
+![Deployment](https://img.shields.io/badge/Deployment-Live-success)
 
 ## Deskripsi
 
@@ -144,6 +145,7 @@ Aplikasi memungkinkan admin atau koordinator kursus untuk mengelola data peserta
 kursusin-web/
 │
 ├── assets/
+│   ├── login-page.jpeg
 │   ├── dashboard-page.jpeg
 │   ├── peserta-page.jpeg
 │   ├── peserta-form.jpeg
@@ -153,14 +155,15 @@ kursusin-web/
 │   ├── bidang-form.jpeg
 │   └── statistik-page.jpeg
 │
+├── data/
+│   └── kursusin.json
+│
 ├── static/
 │   └── css/
 │       └── style.css
 │
-├── data/
-│   └── kursusin.json
-│
 ├── templates/
+│   ├── login.html
 │   ├── index.html
 │   ├── peserta.html
 │   ├── kursus.html
@@ -176,6 +179,17 @@ kursusin-web/
 ├── go.sum
 └── README.md
 ```
+
+## Struktur Project
+
+| Folder/File | Fungsi |
+|------------|---------|
+| assets | Screenshot dokumentasi aplikasi |
+| data | Penyimpanan data JSON |
+| static | CSS dan aset statis |
+| templates | Tampilan HTML |
+| main.go | Routing, handler, algoritma, dan autentikasi |
+| README.md | Dokumentasi project |
 
 ## Cara Menjalankan
 
