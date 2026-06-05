@@ -16,19 +16,35 @@ Aplikasi memungkinkan admin atau koordinator kursus untuk mengelola data peserta
 
 ### Dashboard
 
-![Dashboard](assets/dashboard.jpeg)
+![Dashboard](assets/dashboard-page.jpeg)
 
 ### Data Peserta
 
-![Peserta](assets/peserta.jpeg)
+![Data Peserta](assets/peserta-page.jpeg)
+
+### Form Peserta
+
+![Form Peserta](assets/peserta-form.jpeg)
 
 ### Data Kursus
 
-![Kursus](assets/kursus.jpeg)
+![Data Kursus](assets/kursus-page.jpeg)
 
-### Statistik
+### Form Kursus
 
-![Statistik](assets/statistik.jpeg)
+![Form Kursus](assets/kursus-form.jpeg)
+
+### Data Bidang Minat
+
+![Data Bidang Minat](assets/bidang-page.jpeg)
+
+### Form Bidang Minat
+
+![Form Bidang Minat](assets/bidang-form.jpeg)
+
+### Statistik Peserta
+
+![Statistik Peserta](assets/statistik-page.jpeg)
 
 ## Progress
 
@@ -47,46 +63,46 @@ Aplikasi memungkinkan admin atau koordinator kursus untuk mengelola data peserta
 
 ### Manajemen Peserta
 
-* Tambah data peserta
-* Lihat daftar peserta
-* Edit data peserta
-* Hapus data peserta
-* Pencatatan tanggal pendaftaran
-* Status peserta aktif/tidak aktif
+- Tambah data peserta
+- Lihat daftar peserta
+- Edit data peserta
+- Hapus data peserta
+- Pencatatan tanggal pendaftaran
+- Status peserta aktif/tidak aktif
 
 ### Manajemen Kursus
 
-* Tambah kursus
-* Lihat daftar kursus
-* Pengelolaan relasi kursus dengan bidang minat
+- Tambah kursus
+- Lihat daftar kursus
+- Pengelolaan relasi kursus dengan bidang minat
 
 ### Manajemen Bidang Minat
 
-* Tambah bidang minat
-* Lihat daftar bidang minat
+- Tambah bidang minat
+- Lihat daftar bidang minat
 
 ### Algoritma yang Diimplementasikan
 
-* Sequential Search
-* Binary Search
-* Selection Sort
-* Insertion Sort
+- Sequential Search
+- Binary Search
+- Selection Sort
+- Insertion Sort
 
 ### Statistik
 
-* Total peserta
-* Total peserta aktif
-* Jumlah peserta berdasarkan bidang minat
+- Total peserta
+- Total peserta aktif
+- Jumlah peserta berdasarkan bidang minat
 
 ---
 
 ## Teknologi
 
-* Go (Golang)
-* Gin Framework
-* HTML Template
-* Bootstrap 5
-* JSON Storage
+- Go (Golang)
+- Gin Framework
+- HTML Template
+- Bootstrap 5
+- JSON Storage
 
 ---
 
@@ -178,11 +194,11 @@ Digunakan untuk mengurutkan peserta berdasarkan nama peserta secara alfabetis.
 
 ## Pengembang
 
-| Keterangan | Detail |
-|---|---|
-| Nama | Muhammad Irgie Dapiandri |
-| Mata Kuliah | Algoritma Pemrograman 2 |
-| Proyek | Tugas Besar Sistem Pendaftaran Kursus Online Terpadu (KursusIn) |
+| Keterangan  | Detail                                                          |
+| ----------- | --------------------------------------------------------------- |
+| Nama        | Muhammad Irgie Dapiandri                                        |
+| Mata Kuliah | Algoritma Pemrograman 2                                         |
+| Proyek      | Tugas Besar Sistem Pendaftaran Kursus Online Terpadu (KursusIn) |
 
 ---
 
