@@ -13,8 +13,15 @@ Aplikasi memungkinkan admin atau koordinator kursus untuk mengelola data peserta
 
 ---
 
+## Live Demo
+
+🌐 https://YOUR-RAILWAY-URL.up.railway.app
+
 ## Features
 
+- Login Authentication
+- Session-based Access Control
+- Protected Routes
 - CRUD Peserta
 - CRUD Kursus
 - CRUD Bidang Minat
@@ -25,8 +32,13 @@ Aplikasi memungkinkan admin atau koordinator kursus untuk mengelola data peserta
 - Dashboard UI
 - Statistik Peserta
 - JSON Persistence
+- Live Deployment
 
 ## Tampilan Aplikasi
+
+### Login Page
+
+![Login](assets/login-page.jpeg)
 
 ### Dashboard
 
@@ -62,6 +74,9 @@ Aplikasi memungkinkan admin atau koordinator kursus untuk mengelola data peserta
 
 ## Progress
 
+- [x] Authentication
+- [x] Route Protection
+- [x] Login UI
 - [x] CRUD Peserta
 - [x] CRUD Kursus
 - [x] CRUD Bidang Minat
@@ -71,7 +86,7 @@ Aplikasi memungkinkan admin atau koordinator kursus untuk mengelola data peserta
 - [x] Insertion Sort
 - [x] Statistik Peserta
 - [x] Penyimpanan JSON
-- [ ] Deployment
+- [x] Deployment
 
 ## Fitur Utama
 
@@ -116,6 +131,9 @@ Aplikasi memungkinkan admin atau koordinator kursus untuk mengelola data peserta
 - Gin Framework
 - HTML Template
 - Bootstrap 5
+- Bootstrap Icons
+- Custom CSS Dashboard
+- Session Cookie Authentication
 - JSON Storage
 
 ---
@@ -230,7 +248,6 @@ Digunakan untuk mengurutkan peserta berdasarkan nama peserta secara alfabetis.
 
 ## Future Improvements
 
-- Authentication & Authorization
 - PostgreSQL Integration
 - Role-based Access Control
 - Deployment to Cloud Platform
