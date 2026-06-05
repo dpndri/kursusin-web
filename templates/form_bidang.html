@@ -1,7 +1,70 @@
-{{ template "head" . }}
-<div class="card shadow-sm"><div class="card-body"><h1 class="h3 mb-3">Tambah Bidang Minat</h1><form action="/bidang/tambah" method="POST">
-<div class="mb-3"><label class="form-label">ID Bidang</label><input class="form-control" type="number" name="id_bidang" required></div>
-<div class="mb-3"><label class="form-label">Nama Bidang</label><input class="form-control" type="text" name="nama_bidang" required></div>
-<button class="btn btn-primary">Simpan</button> <a class="btn btn-secondary" href="/bidang">Kembali</a>
-</form></div></div>
-{{ template "foot" . }}
+<!doctype html>
+<html>
+  <head>
+    <title>KursusIn - Tambah Bidang Minat</title>
+    {{ template "layout_head.html" }}
+  </head>
+
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h3>KursusIn</h3>
+
+        <a href="/">Dashboard</a>
+        <a href="/peserta">Peserta</a>
+        <a href="/kursus">Kursus</a>
+        <a href="/bidang">Bidang Minat</a>
+        <a href="/statistik">Statistik</a>
+      </aside>
+
+      <main class="main-content">
+        <div class="topbar d-flex justify-content-between align-items-center">
+          <div>
+            <h4 class="mb-1">Tambah Bidang Minat</h4>
+            <p class="text-muted mb-0">
+              Tambahkan kategori bidang minat untuk pengelompokan kursus
+            </p>
+          </div>
+
+          <a href="/bidang" class="btn btn-outline-secondary"> Kembali </a>
+        </div>
+
+        <div class="content-card">
+          <form action="/bidang/tambah" method="POST">
+            <div class="row g-4">
+              <div class="col-md-6">
+                <label class="form-label">ID Bidang</label>
+                <input
+                  class="form-control"
+                  type="number"
+                  name="id_bidang"
+                  placeholder="Contoh: 1"
+                  required
+                />
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Nama Bidang</label>
+                <input
+                  class="form-control"
+                  type="text"
+                  name="nama_bidang"
+                  placeholder="Contoh: Web Development"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+              <a href="/bidang" class="btn btn-outline-secondary"> Batal </a>
+
+              <button class="btn btn-primary" type="submit">
+                Simpan Bidang
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

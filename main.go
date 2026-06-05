@@ -50,6 +50,7 @@ func main() {
 	mustLoadData()
 
 	r := gin.Default()
+	r.Static("/static", "./static")
 	r.SetFuncMap(template.FuncMap{
 		"namaBidang": namaBidangByID,
 		"namaKursus": namaKursusByID,

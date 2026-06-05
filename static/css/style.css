@@ -1,0 +1,163 @@
+body {
+    margin: 0;
+    background: #f5f7fb;
+    font-family: Arial, sans-serif;
+    color: #111827;
+}
+
+.app-shell {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 260px;
+    background: #111827;
+    color: #ffffff;
+    padding: 28px 24px;
+    flex-shrink: 0;
+}
+
+.sidebar h3 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 42px;
+}
+
+.sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #e5e7eb;
+    text-decoration: none;
+    padding: 13px 16px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    transition: 0.2s ease;
+}
+
+.sidebar a:hover {
+    background: #1f2937;
+    color: #ffffff;
+    transform: translateX(4px);
+}
+
+.main-content {
+    flex: 1;
+    padding: 30px;
+}
+
+.topbar {
+    background: #ffffff;
+    padding: 22px 26px;
+    border-radius: 18px;
+    margin-bottom: 26px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+.topbar h4 {
+    font-weight: 700;
+}
+
+.stat-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 26px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+    transition: 0.25s ease;
+    min-height: 130px;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 38px rgba(15, 23, 42, 0.1);
+}
+
+.stat-card p {
+    color: #64748b;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+.stat-card h2 {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 800;
+}
+
+.content-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 26px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+.content-card h5 {
+    font-weight: 700;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    color: #64748b;
+    font-size: 14px;
+    font-weight: 700;
+    background: #f8fafc;
+}
+
+.table tbody td {
+    vertical-align: middle;
+}
+
+.btn {
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.form-control,
+.form-select {
+    border-radius: 12px;
+    padding: 11px 14px;
+}
+
+.badge {
+    padding: 8px 12px;
+    border-radius: 999px;
+}
+
+.content-card {
+    overflow: hidden;
+}
+
+.table tbody tr {
+    transition: 0.2s;
+}
+
+.table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.btn-primary {
+    background: #2563eb;
+    border: none;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.sidebar a.active {
+    background: #2563eb;
+    color: white;
+}
+
+.form-label {
+    font-weight: 600;
+}
+
+.content-card {
+    border: none;
+}

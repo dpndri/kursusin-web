@@ -1,6 +1,81 @@
-{{ template "head" . }}
-<div class="d-flex justify-content-between align-items-center mb-3"><h1 class="h3">Data Bidang Minat</h1><a class="btn btn-primary" href="/bidang/tambah">Tambah Bidang</a></div>
-<table class="table table-bordered table-striped bg-white shadow-sm"><thead class="table-dark"><tr><th>ID</th><th>Nama Bidang</th><th>Aksi</th></tr></thead><tbody>
-{{ range .bidang }}<tr><td>{{ .IDBidang }}</td><td>{{ .NamaBidang }}</td><td><form action="/bidang/hapus/{{ .IDBidang }}" method="POST" onsubmit="return confirm('Hapus bidang?')"><button class="btn btn-sm btn-danger">Hapus</button></form></td></tr>{{ else }}<tr><td colspan="3" class="text-center text-muted">Belum ada data</td></tr>{{ end }}
-</tbody></table>
-{{ template "foot" . }}
+<!doctype html>
+<html>
+  <head>
+    <title>KursusIn - Data Bidang Minat</title>
+    {{ template "layout_head.html" }}
+  </head>
+
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h3>KursusIn</h3>
+
+        <a href="/">Dashboard</a>
+        <a href="/peserta">Peserta</a>
+        <a href="/kursus">Kursus</a>
+        <a href="/bidang">Bidang Minat</a>
+        <a href="/statistik">Statistik</a>
+      </aside>
+
+      <main class="main-content">
+        <div class="topbar d-flex justify-content-between align-items-center">
+          <div>
+            <h4 class="mb-1">Data Bidang Minat</h4>
+            <p class="text-muted mb-0">
+              Kelola kategori bidang minat untuk setiap kursus
+            </p>
+          </div>
+
+          <a href="/bidang/tambah" class="btn btn-primary"> + Tambah Bidang </a>
+        </div>
+
+        <div class="content-card">
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nama Bidang</th>
+                  <th class="text-end">Aksi</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {{ range .bidang }}
+                <tr>
+                  <td>#{{ .IDBidang }}</td>
+                  <td>
+                    <strong>{{ .NamaBidang }}</strong>
+                  </td>
+                  <td class="text-end">
+                    <form
+                      action="/bidang/hapus/{{ .IDBidang }}"
+                      method="POST"
+                      style="display: inline"
+                    >
+                      <button
+                        class="btn btn-sm btn-outline-danger"
+                        onclick="
+                          return confirm('Yakin ingin menghapus bidang ini?');
+                        "
+                      >
+                        Hapus
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+                {{ else }}
+                <tr>
+                  <td colspan="3" class="text-center text-muted py-4">
+                    Belum ada data bidang minat
+                  </td>
+                </tr>
+                {{ end }}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

@@ -1,8 +1,80 @@
-{{ template "head" . }}
-<div class="card shadow-sm"><div class="card-body"><h1 class="h3 mb-3">Tambah Kursus</h1><form action="/kursus/tambah" method="POST">
-<div class="mb-3"><label class="form-label">ID Kursus</label><input class="form-control" type="number" name="id_kursus" required></div>
-<div class="mb-3"><label class="form-label">Nama Kursus</label><input class="form-control" type="text" name="nama_kursus" required></div>
-<div class="mb-3"><label class="form-label">Bidang Minat</label><select class="form-select" name="id_bidang" required><option value="">Pilih bidang</option>{{ range .bidang }}<option value="{{ .IDBidang }}">{{ .NamaBidang }}</option>{{ end }}</select></div>
-<button class="btn btn-primary">Simpan</button> <a class="btn btn-secondary" href="/kursus">Kembali</a>
-</form></div></div>
-{{ template "foot" . }}
+<!doctype html>
+<html>
+  <head>
+    <title>KursusIn - Tambah Kursus</title>
+    {{ template "layout_head.html" }}
+  </head>
+
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h3>KursusIn</h3>
+
+        <a href="/">Dashboard</a>
+        <a href="/peserta">Peserta</a>
+        <a href="/kursus">Kursus</a>
+        <a href="/bidang">Bidang Minat</a>
+        <a href="/statistik">Statistik</a>
+      </aside>
+
+      <main class="main-content">
+        <div class="topbar d-flex justify-content-between align-items-center">
+          <div>
+            <h4 class="mb-1">Tambah Kursus</h4>
+            <p class="text-muted mb-0">
+              Tambahkan kursus baru dan hubungkan dengan bidang minat
+            </p>
+          </div>
+
+          <a href="/kursus" class="btn btn-outline-secondary"> Kembali </a>
+        </div>
+
+        <div class="content-card">
+          <form action="/kursus/tambah" method="POST">
+            <div class="row g-4">
+              <div class="col-md-6">
+                <label class="form-label">ID Kursus</label>
+                <input
+                  class="form-control"
+                  type="number"
+                  name="id_kursus"
+                  placeholder="Contoh: 1"
+                  required
+                />
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">Nama Kursus</label>
+                <input
+                  class="form-control"
+                  type="text"
+                  name="nama_kursus"
+                  placeholder="Contoh: Web Development"
+                  required
+                />
+              </div>
+
+              <div class="col-md-12">
+                <label class="form-label">Bidang Minat</label>
+                <select class="form-select" name="id_bidang" required>
+                  <option value="">Pilih bidang minat</option>
+                  {{ range .bidang }}
+                  <option value="{{ .IDBidang }}">{{ .NamaBidang }}</option>
+                  {{ end }}
+                </select>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+              <a href="/kursus" class="btn btn-outline-secondary"> Batal </a>
+
+              <button class="btn btn-primary" type="submit">
+                Simpan Kursus
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

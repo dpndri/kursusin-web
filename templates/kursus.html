@@ -1,6 +1,83 @@
-{{ template "head" . }}
-<div class="d-flex justify-content-between align-items-center mb-3"><h1 class="h3">Data Kursus</h1><a class="btn btn-primary" href="/kursus/tambah">Tambah Kursus</a></div>
-<table class="table table-bordered table-striped bg-white shadow-sm"><thead class="table-dark"><tr><th>ID</th><th>Nama Kursus</th><th>Bidang</th><th>Aksi</th></tr></thead><tbody>
-{{ range .kursus }}<tr><td>{{ .IDKursus }}</td><td>{{ .NamaKursus }}</td><td>{{ namaBidang .IDBidang }}</td><td><form action="/kursus/hapus/{{ .IDKursus }}" method="POST" onsubmit="return confirm('Hapus kursus?')"><button class="btn btn-sm btn-danger">Hapus</button></form></td></tr>{{ else }}<tr><td colspan="4" class="text-center text-muted">Belum ada data</td></tr>{{ end }}
-</tbody></table>
-{{ template "foot" . }}
+<!doctype html>
+<html>
+  <head>
+    <title>KursusIn - Data Kursus</title>
+    {{ template "layout_head.html" }}
+  </head>
+
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h3>KursusIn</h3>
+
+        <a href="/">Dashboard</a>
+        <a href="/peserta">Peserta</a>
+        <a href="/kursus">Kursus</a>
+        <a href="/bidang">Bidang Minat</a>
+        <a href="/statistik">Statistik</a>
+      </aside>
+
+      <main class="main-content">
+        <div class="topbar d-flex justify-content-between align-items-center">
+          <div>
+            <h4 class="mb-1">Data Kursus</h4>
+            <p class="text-muted mb-0">
+              Kelola daftar kursus yang tersedia di KursusIn
+            </p>
+          </div>
+
+          <a href="/kursus/tambah" class="btn btn-primary"> + Tambah Kursus </a>
+        </div>
+
+        <div class="content-card">
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nama Kursus</th>
+                  <th>Bidang Minat</th>
+                  <th class="text-end">Aksi</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {{ range .kursus }}
+                <tr>
+                  <td>#{{ .IDKursus }}</td>
+                  <td>
+                    <strong>{{ .NamaKursus }}</strong>
+                  </td>
+                  <td>{{ namaBidang .IDBidang }}</td>
+                  <td class="text-end">
+                    <form
+                      action="/kursus/hapus/{{ .IDKursus }}"
+                      method="POST"
+                      style="display: inline"
+                    >
+                      <button
+                        class="btn btn-sm btn-outline-danger"
+                        onclick="
+                          return confirm('Yakin ingin menghapus kursus ini?');
+                        "
+                      >
+                        Hapus
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+                {{ else }}
+                <tr>
+                  <td colspan="4" class="text-center text-muted py-4">
+                    Belum ada data kursus
+                  </td>
+                </tr>
+                {{ end }}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

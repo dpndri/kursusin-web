@@ -1,19 +1,70 @@
-{{ template "head" . }}
-<div class="p-4 p-md-5 mb-4 bg-white rounded shadow-sm">
-    <h1 class="display-6 fw-bold">Dashboard KursusIn</h1>
-    <p class="text-muted mb-0">Sistem pendaftaran kursus online terpadu.</p>
-</div>
+<!doctype html>
+<html>
+  <head>
+    <title>KursusIn - Dashboard</title>
+    {{ template "layout_head.html" }}
+  </head>
 
-<div class="row g-3">
-    <div class="col-md-3"><div class="card shadow-sm"><div class="card-body"><small class="text-muted">Total Peserta</small><h2>{{ .totalPeserta }}</h2></div></div></div>
-    <div class="col-md-3"><div class="card shadow-sm"><div class="card-body"><small class="text-muted">Peserta Aktif</small><h2>{{ .totalAktif }}</h2></div></div></div>
-    <div class="col-md-3"><div class="card shadow-sm"><div class="card-body"><small class="text-muted">Total Kursus</small><h2>{{ .totalKursus }}</h2></div></div></div>
-    <div class="col-md-3"><div class="card shadow-sm"><div class="card-body"><small class="text-muted">Bidang Minat</small><h2>{{ .totalBidang }}</h2></div></div></div>
-</div>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h3>KursusIn</h3>
 
-<div class="mt-4 d-flex gap-2 flex-wrap">
-    <a href="/bidang/tambah" class="btn btn-outline-primary">Tambah Bidang</a>
-    <a href="/kursus/tambah" class="btn btn-outline-primary">Tambah Kursus</a>
-    <a href="/peserta/tambah" class="btn btn-primary">Tambah Peserta</a>
-</div>
-{{ template "foot" . }}
+        <a href="/">Dashboard</a>
+        <a href="/peserta">Peserta</a>
+        <a href="/kursus">Kursus</a>
+        <a href="/bidang">Bidang Minat</a>
+        <a href="/statistik">Statistik</a>
+      </aside>
+
+      <main class="main-content">
+        <div class="topbar d-flex justify-content-between align-items-center">
+          <div>
+            <h4 class="mb-1">Dashboard</h4>
+            <p class="text-muted mb-0">
+              Ringkasan data pendaftaran kursus online
+            </p>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-3">
+            <div class="stat-card border-start border-primary border-4">
+              <p>Total Peserta</p>
+              <h2>{{ .totalPeserta }}</h2>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="stat-card border-start border-success border-4">
+              <p>Peserta Aktif</p>
+              <h2>{{ .totalAktif }}</h2>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="stat-card border-start border-warning border-4">
+              <p>Total Kursus</p>
+              <h2>{{ .totalKursus }}</h2>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="stat-card border-start border-danger border-4">
+              <p>Total Bidang</p>
+              <h2>{{ .totalBidang }}</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-card mt-4">
+          <h5>Selamat Datang di KursusIn</h5>
+          <p class="text-muted mb-0">
+            Kelola data peserta, kursus, bidang minat, pencarian, pengurutan,
+            dan statistik pendaftaran dari satu dashboard.
+          </p>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
