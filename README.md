@@ -178,9 +178,11 @@ Digunakan untuk mengurutkan peserta berdasarkan nama peserta secara alfabetis.
 
 ## Pengembang
 
-Nama: Muhammad Irgie Dapiandri 
-Mata Kuliah: Algoritma Pemrograman 2
-Proyek: Tugas Besar Sistem Pendaftaran Kursus Online Terpadu (KursusIn)
+| Keterangan | Detail |
+|---|---|
+| Nama | Muhammad Irgie Dapiandri |
+| Mata Kuliah | Algoritma Pemrograman 2 |
+| Proyek | Tugas Besar Sistem Pendaftaran Kursus Online Terpadu (KursusIn) |
 
 ---
 
