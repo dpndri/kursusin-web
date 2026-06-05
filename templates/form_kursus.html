@@ -1,0 +1,8 @@
+{{ template "head" . }}
+<div class="card shadow-sm"><div class="card-body"><h1 class="h3 mb-3">Tambah Kursus</h1><form action="/kursus/tambah" method="POST">
+<div class="mb-3"><label class="form-label">ID Kursus</label><input class="form-control" type="number" name="id_kursus" required></div>
+<div class="mb-3"><label class="form-label">Nama Kursus</label><input class="form-control" type="text" name="nama_kursus" required></div>
+<div class="mb-3"><label class="form-label">Bidang Minat</label><select class="form-select" name="id_bidang" required><option value="">Pilih bidang</option>{{ range .bidang }}<option value="{{ .IDBidang }}">{{ .NamaBidang }}</option>{{ end }}</select></div>
+<button class="btn btn-primary">Simpan</button> <a class="btn btn-secondary" href="/kursus">Kembali</a>
+</form></div></div>
+{{ template "foot" . }}

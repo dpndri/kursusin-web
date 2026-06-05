@@ -1,0 +1,10 @@
+{{ template "head" . }}
+<h1 class="h3 mb-3">Statistik Peserta</h1>
+<div class="row g-3 mb-4">
+    <div class="col-md-6"><div class="card shadow-sm"><div class="card-body"><small class="text-muted">Total Peserta</small><h2>{{ .totalPeserta }}</h2></div></div></div>
+    <div class="col-md-6"><div class="card shadow-sm"><div class="card-body"><small class="text-muted">Total Aktif</small><h2>{{ .totalAktif }}</h2></div></div></div>
+</div>
+<table class="table table-bordered table-striped bg-white shadow-sm"><thead class="table-dark"><tr><th>Bidang Minat</th><th>Jumlah Peserta</th></tr></thead><tbody>
+{{ range .bidang }}<tr><td>{{ .NamaBidang }}</td><td>{{ index $.jumlahPerBidang .IDBidang }}</td></tr>{{ else }}<tr><td colspan="2" class="text-center text-muted">Belum ada bidang</td></tr>{{ end }}
+</tbody></table>
+{{ template "foot" . }}

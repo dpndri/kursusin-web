@@ -1,0 +1,48 @@
+{{ template "head" . }}
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h1 class="h3 mb-3">{{ .title }}</h1>
+        {{ if eq .mode "edit" }}
+        <form action="/peserta/edit/{{ .peserta.IDPendaftaran }}" method="POST">
+        {{ else }}
+        <form action="/peserta/tambah" method="POST">
+        {{ end }}
+            <div class="mb-3">
+                <label class="form-label">ID Pendaftaran</label>
+                <input class="form-control" type="number" name="id_pendaftaran" value="{{ .peserta.IDPendaftaran }}" {{ if eq .mode "edit" }}readonly{{ end }} required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Nama Lengkap</label>
+                <input class="form-control" type="text" name="nama_lengkap" value="{{ .peserta.NamaLengkap }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Tanggal Daftar</label>
+                <input class="form-control" type="date" name="tanggal_daftar" value="{{ .peserta.TanggalDaftar }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Kursus</label>
+                <select class="form-select" name="id_kursus" required>
+                    <option value="">Pilih kursus</option>
+                    {{ range .kursus }}<option value="{{ .IDKursus }}" {{ if eq $.peserta.IDKursus .IDKursus }}selected{{ end }}>{{ .NamaKursus }}</option>{{ end }}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Bidang Minat</label>
+                <select class="form-select" name="id_bidang" required>
+                    <option value="">Pilih bidang</option>
+                    {{ range .bidang }}<option value="{{ .IDBidang }}" {{ if eq $.peserta.IDBidang .IDBidang }}selected{{ end }}>{{ .NamaBidang }}</option>{{ end }}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Status</label>
+                <select class="form-select" name="status_aktif">
+                    <option value="true" {{ if .peserta.StatusAktif }}selected{{ end }}>Aktif</option>
+                    <option value="false" {{ if not .peserta.StatusAktif }}selected{{ end }}>Tidak Aktif</option>
+                </select>
+            </div>
+            <button class="btn btn-primary" type="submit">Simpan</button>
+            <a href="/peserta" class="btn btn-secondary">Kembali</a>
+        </form>
+    </div>
+</div>
+{{ template "foot" . }}

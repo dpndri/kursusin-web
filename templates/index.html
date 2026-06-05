@@ -1,0 +1,19 @@
+{{ template "head" . }}
+<div class="p-4 p-md-5 mb-4 bg-white rounded shadow-sm">
+    <h1 class="display-6 fw-bold">Dashboard KursusIn</h1>
+    <p class="text-muted mb-0">Sistem pendaftaran kursus online terpadu.</p>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-3"><div class="card shadow-sm"><div class="card-body"><small class="text-muted">Total Peserta</small><h2>{{ .totalPeserta }}</h2></div></div></div>
+    <div class="col-md-3"><div class="card shadow-sm"><div class="card-body"><small class="text-muted">Peserta Aktif</small><h2>{{ .totalAktif }}</h2></div></div></div>
+    <div class="col-md-3"><div class="card shadow-sm"><div class="card-body"><small class="text-muted">Total Kursus</small><h2>{{ .totalKursus }}</h2></div></div></div>
+    <div class="col-md-3"><div class="card shadow-sm"><div class="card-body"><small class="text-muted">Bidang Minat</small><h2>{{ .totalBidang }}</h2></div></div></div>
+</div>
+
+<div class="mt-4 d-flex gap-2 flex-wrap">
+    <a href="/bidang/tambah" class="btn btn-outline-primary">Tambah Bidang</a>
+    <a href="/kursus/tambah" class="btn btn-outline-primary">Tambah Kursus</a>
+    <a href="/peserta/tambah" class="btn btn-primary">Tambah Peserta</a>
+</div>
+{{ template "foot" . }}

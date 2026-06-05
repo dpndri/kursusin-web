@@ -1,0 +1,6 @@
+{{ template "head" . }}
+<div class="d-flex justify-content-between align-items-center mb-3"><h1 class="h3">Data Bidang Minat</h1><a class="btn btn-primary" href="/bidang/tambah">Tambah Bidang</a></div>
+<table class="table table-bordered table-striped bg-white shadow-sm"><thead class="table-dark"><tr><th>ID</th><th>Nama Bidang</th><th>Aksi</th></tr></thead><tbody>
+{{ range .bidang }}<tr><td>{{ .IDBidang }}</td><td>{{ .NamaBidang }}</td><td><form action="/bidang/hapus/{{ .IDBidang }}" method="POST" onsubmit="return confirm('Hapus bidang?')"><button class="btn btn-sm btn-danger">Hapus</button></form></td></tr>{{ else }}<tr><td colspan="3" class="text-center text-muted">Belum ada data</td></tr>{{ end }}
+</tbody></table>
+{{ template "foot" . }}

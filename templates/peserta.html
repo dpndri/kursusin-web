@@ -1,0 +1,54 @@
+{{ template "head" . }}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3">Data Peserta</h1>
+    <a href="/peserta/tambah" class="btn btn-primary">Tambah Peserta</a>
+</div>
+
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <form action="/peserta/cari" method="GET" class="row g-2 mb-2">
+            <div class="col-md-6"><input class="form-control" type="text" name="keyword" placeholder="Cari nama peserta / kosongkan untuk semua"></div>
+            <div class="col-md-3"><input class="form-control" type="number" name="id_bidang" placeholder="ID bidang opsional"></div>
+            <div class="col-md-3"><button class="btn btn-primary w-100" type="submit">Sequential Search</button></div>
+        </form>
+        <form action="/peserta/binary-search" method="GET" class="row g-2">
+            <div class="col-md-9"><input class="form-control" type="text" name="keyword" placeholder="Binary Search: nama lengkap harus sama persis"></div>
+            <div class="col-md-3"><button class="btn btn-dark w-100" type="submit">Binary Search</button></div>
+        </form>
+        <hr>
+        <a href="/peserta" class="btn btn-sm btn-outline-secondary">Reset</a>
+        <a href="/peserta/sort/id" class="btn btn-sm btn-warning">Selection Sort ID</a>
+        <a href="/peserta/sort/nama" class="btn btn-sm btn-warning">Insertion Sort Nama</a>
+    </div>
+</div>
+
+<div class="table-responsive">
+<table class="table table-bordered table-striped bg-white shadow-sm align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th><th>Nama</th><th>Tanggal</th><th>Kursus</th><th>Bidang</th><th>Status</th><th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+    {{ range .peserta }}
+        <tr>
+            <td>{{ .IDPendaftaran }}</td>
+            <td>{{ .NamaLengkap }}</td>
+            <td>{{ .TanggalDaftar }}</td>
+            <td>{{ namaKursus .IDKursus }}</td>
+            <td>{{ namaBidang .IDBidang }}</td>
+            <td>{{ if .StatusAktif }}<span class="badge bg-success">Aktif</span>{{ else }}<span class="badge bg-secondary">Tidak Aktif</span>{{ end }}</td>
+            <td>
+                <a href="/peserta/edit/{{ .IDPendaftaran }}" class="btn btn-sm btn-primary">Edit</a>
+                <form action="/peserta/hapus/{{ .IDPendaftaran }}" method="POST" class="d-inline" onsubmit="return confirm('Hapus peserta ini?')">
+                    <button class="btn btn-sm btn-danger" type="submit">Hapus</button>
+                </form>
+            </td>
+        </tr>
+    {{ else }}
+        <tr><td colspan="7" class="text-center text-muted">Data tidak ditemukan</td></tr>
+    {{ end }}
+    </tbody>
+</table>
+</div>
+{{ template "foot" . }}
