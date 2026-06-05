@@ -8,6 +8,24 @@ Aplikasi memungkinkan admin atau koordinator kursus untuk mengelola data peserta
 
 ---
 
+## Tampilan Aplikasi
+
+### Dashboard
+
+![Dashboard](assets/dashboard.jpeg)
+
+### Data Peserta
+
+![Peserta](assets/peserta.jpeg)
+
+### Data Kursus
+
+![Kursus](assets/kursus.jpeg)
+
+### Statistik
+
+![Statistik](assets/statistik.jpeg)
+
 ## Fitur Utama
 
 ### Manajemen Peserta
