@@ -1,15 +1,12 @@
 package main
 
 import (
-	"encoding/json"
-	"errors"
+	"context"
 	"html/template"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
-	"sync"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,20 +31,17 @@ type BidangMinat struct {
 	NamaBidang string `json:"nama_bidang"`
 }
 
-type AppData struct {
-	Peserta []Peserta     `json:"peserta"`
-	Kursus  []Kursus      `json:"kursus"`
-	Bidang  []BidangMinat `json:"bidang"`
-}
-
-var (
-	storePath = filepath.Join("data", "kursusin.json")
-	appData   = AppData{}
-	mu        sync.Mutex
-)
-
 func main() {
-	mustLoadData()
+	err := connectDB()
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	err = migrateDB()
+	if err != nil {
+		panic(err)
+	}
 
 	r := gin.Default()
 	r.Static("/static", "./static")
@@ -98,46 +92,6 @@ func main() {
 	r.Run(":" + port)
 }
 
-func mustLoadData() {
-	mu.Lock()
-	defer mu.Unlock()
-
-	_ = os.MkdirAll(filepath.Dir(storePath), 0755)
-
-	bytes, err := os.ReadFile(storePath)
-	if errors.Is(err, os.ErrNotExist) {
-		appData = AppData{}
-		mustSaveDataLocked()
-		return
-	}
-	if err != nil {
-		panic(err)
-	}
-	if len(strings.TrimSpace(string(bytes))) == 0 {
-		appData = AppData{}
-		return
-	}
-	if err := json.Unmarshal(bytes, &appData); err != nil {
-		panic(err)
-	}
-}
-
-func mustSaveDataLocked() {
-	bytes, err := json.MarshalIndent(appData, "", "  ")
-	if err != nil {
-		panic(err)
-	}
-	if err := os.WriteFile(storePath, bytes, 0644); err != nil {
-		panic(err)
-	}
-}
-
-func saveData() {
-	mu.Lock()
-	defer mu.Unlock()
-	mustSaveDataLocked()
-}
-
 func authMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		cookie, err := c.Cookie("is_logged_in")
@@ -180,110 +134,191 @@ func logout(c *gin.Context) {
 }
 
 func dashboard(c *gin.Context) {
-	totalAktif := 0
-	for _, p := range appData.Peserta {
-		if p.StatusAktif {
-			totalAktif++
-		}
+
+	totalPeserta,
+		totalAktif,
+		totalKursus,
+		totalBidang,
+		err := getDashboardStats()
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
 	}
+
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"title":        "Dashboard KursusIn",
-		"totalPeserta": len(appData.Peserta),
+		"totalPeserta": totalPeserta,
 		"totalAktif":   totalAktif,
-		"totalKursus":  len(appData.Kursus),
-		"totalBidang":  len(appData.Bidang),
+		"totalKursus":  totalKursus,
+		"totalBidang":  totalBidang,
 	})
 }
 
 func tampilPeserta(c *gin.Context) {
+
+	peserta, err := getAllPeserta()
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	c.HTML(http.StatusOK, "peserta.html", gin.H{
 		"title":   "Data Peserta",
-		"peserta": appData.Peserta,
+		"peserta": peserta,
 	})
 }
 
 func formTambahPeserta(c *gin.Context) {
+
+	kursus, err := getAllKursus()
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	bidang, err := getAllBidang()
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	c.HTML(http.StatusOK, "form_peserta.html", gin.H{
 		"title":   "Tambah Peserta",
 		"mode":    "tambah",
 		"peserta": Peserta{StatusAktif: true},
-		"kursus":  appData.Kursus,
-		"bidang":  appData.Bidang,
+		"kursus":  kursus,
+		"bidang":  bidang,
 	})
 }
 
 func tambahPeserta(c *gin.Context) {
 	idPendaftaran := atoi(c.PostForm("id_pendaftaran"))
-	if idPendaftaran == 0 || indexPesertaByID(idPendaftaran) != -1 {
-		redirectWithError(c, "/peserta", "ID pendaftaran tidak valid atau sudah dipakai")
+	namaLengkap := strings.TrimSpace(c.PostForm("nama_lengkap"))
+	tanggalDaftar := c.PostForm("tanggal_daftar")
+	idKursus := atoi(c.PostForm("id_kursus"))
+	idBidang := atoi(c.PostForm("id_bidang"))
+	statusAktif := c.PostForm("status_aktif") == "true"
+
+	if idPendaftaran == 0 || namaLengkap == "" || tanggalDaftar == "" || idKursus == 0 || idBidang == 0 {
+		redirectWithError(c, "/peserta", "Data peserta tidak valid")
 		return
 	}
 
-	p := Peserta{
+	err := insertPeserta(Peserta{
 		IDPendaftaran: idPendaftaran,
-		NamaLengkap:   strings.TrimSpace(c.PostForm("nama_lengkap")),
-		TanggalDaftar: c.PostForm("tanggal_daftar"),
-		IDKursus:      atoi(c.PostForm("id_kursus")),
-		IDBidang:      atoi(c.PostForm("id_bidang")),
-		StatusAktif:   c.PostForm("status_aktif") == "true",
+		NamaLengkap:   namaLengkap,
+		TanggalDaftar: tanggalDaftar,
+		IDKursus:      idKursus,
+		IDBidang:      idBidang,
+		StatusAktif:   statusAktif,
+	})
+
+	if err != nil {
+		redirectWithError(c, "/peserta", "ID peserta sudah dipakai atau relasi kursus/bidang tidak valid")
+		return
 	}
-	appData.Peserta = append(appData.Peserta, p)
-	saveData()
+
 	c.Redirect(http.StatusSeeOther, "/peserta")
 }
 
 func formEditPeserta(c *gin.Context) {
 	id := atoi(c.Param("id"))
-	idx := indexPesertaByID(id)
-	if idx == -1 {
+
+	peserta, err := getPesertaByID(id)
+	if err != nil {
 		c.String(http.StatusNotFound, "Peserta tidak ditemukan")
 		return
 	}
+
+	kursus, err := getAllKursus()
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	bidang, err := getAllBidang()
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	c.HTML(http.StatusOK, "form_peserta.html", gin.H{
 		"title":   "Edit Peserta",
 		"mode":    "edit",
-		"peserta": appData.Peserta[idx],
-		"kursus":  appData.Kursus,
-		"bidang":  appData.Bidang,
+		"peserta": peserta,
+		"kursus":  kursus,
+		"bidang":  bidang,
 	})
 }
 
 func updatePeserta(c *gin.Context) {
 	id := atoi(c.Param("id"))
-	idx := indexPesertaByID(id)
-	if idx == -1 {
-		c.String(http.StatusNotFound, "Peserta tidak ditemukan")
+
+	namaLengkap := strings.TrimSpace(c.PostForm("nama_lengkap"))
+	tanggalDaftar := c.PostForm("tanggal_daftar")
+	idKursus := atoi(c.PostForm("id_kursus"))
+	idBidang := atoi(c.PostForm("id_bidang"))
+	statusAktif := c.PostForm("status_aktif") == "true"
+
+	if id == 0 || namaLengkap == "" || tanggalDaftar == "" || idKursus == 0 || idBidang == 0 {
+		redirectWithError(c, "/peserta", "Data peserta tidak valid")
 		return
 	}
-	appData.Peserta[idx].NamaLengkap = strings.TrimSpace(c.PostForm("nama_lengkap"))
-	appData.Peserta[idx].TanggalDaftar = c.PostForm("tanggal_daftar")
-	appData.Peserta[idx].IDKursus = atoi(c.PostForm("id_kursus"))
-	appData.Peserta[idx].IDBidang = atoi(c.PostForm("id_bidang"))
-	appData.Peserta[idx].StatusAktif = c.PostForm("status_aktif") == "true"
-	saveData()
+
+	err := updatePesertaDB(Peserta{
+		IDPendaftaran: id,
+		NamaLengkap:   namaLengkap,
+		TanggalDaftar: tanggalDaftar,
+		IDKursus:      idKursus,
+		IDBidang:      idBidang,
+		StatusAktif:   statusAktif,
+	})
+
+	if err != nil {
+		redirectWithError(c, "/peserta", "Gagal memperbarui data peserta")
+		return
+	}
+
 	c.Redirect(http.StatusSeeOther, "/peserta")
 }
 
 func hapusPeserta(c *gin.Context) {
 	id := atoi(c.Param("id"))
-	idx := indexPesertaByID(id)
-	if idx == -1 {
-		c.String(http.StatusNotFound, "Peserta tidak ditemukan")
+
+	err := deletePeserta(id)
+
+	if err != nil {
+		redirectWithError(c, "/peserta", "Gagal menghapus peserta")
 		return
 	}
-	appData.Peserta = append(appData.Peserta[:idx], appData.Peserta[idx+1:]...)
-	saveData()
+
 	c.Redirect(http.StatusSeeOther, "/peserta")
 }
 
 func cariPesertaSequential(c *gin.Context) {
 	keyword := strings.ToLower(strings.TrimSpace(c.Query("keyword")))
 	bidang := atoi(c.Query("id_bidang"))
+
+	peserta, err := getAllPeserta()
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	bidangList, err := getAllBidang()
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	hasil := []Peserta{}
 
-	for _, p := range appData.Peserta {
+	for _, p := range peserta {
 		cocokNama := keyword == "" || strings.Contains(strings.ToLower(p.NamaLengkap), keyword)
 		cocokBidang := bidang == 0 || p.IDBidang == bidang
+
 		if cocokNama && cocokBidang {
 			hasil = append(hasil, p)
 		}
@@ -293,24 +328,35 @@ func cariPesertaSequential(c *gin.Context) {
 		"title":   "Hasil Sequential Search",
 		"peserta": hasil,
 		"keyword": keyword,
-		"bidang":  appData.Bidang,
+		"bidang":  bidangList,
 	})
 }
 
 func cariPesertaBinary(c *gin.Context) {
 	keyword := strings.ToLower(strings.TrimSpace(c.Query("keyword")))
-	sorted := copyPeserta(appData.Peserta)
+
+	peserta, err := getAllPeserta()
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	sorted := copyPeserta(peserta)
 	insertionSortPesertaByNama(sorted)
 
-	kiri, kanan := 0, len(sorted)-1
+	kiri := 0
+	kanan := len(sorted) - 1
 	hasil := []Peserta{}
+
 	for kiri <= kanan {
 		tengah := (kiri + kanan) / 2
 		namaTengah := strings.ToLower(sorted[tengah].NamaLengkap)
+
 		if namaTengah == keyword {
 			hasil = append(hasil, sorted[tengah])
 			break
 		}
+
 		if namaTengah < keyword {
 			kiri = tengah + 1
 		} else {
@@ -326,52 +372,115 @@ func cariPesertaBinary(c *gin.Context) {
 }
 
 func sortPesertaByID(c *gin.Context) {
-	selectionSortPesertaByID(appData.Peserta)
-	saveData()
-	c.Redirect(http.StatusSeeOther, "/peserta")
+	peserta, err := getAllPeserta()
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	selectionSortPesertaByID(peserta)
+
+	c.HTML(http.StatusOK, "peserta.html", gin.H{
+		"title":   "Peserta Diurutkan Berdasarkan ID",
+		"peserta": peserta,
+	})
 }
 
 func sortPesertaByNama(c *gin.Context) {
-	insertionSortPesertaByNama(appData.Peserta)
-	saveData()
-	c.Redirect(http.StatusSeeOther, "/peserta")
+	peserta, err := getAllPeserta()
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	insertionSortPesertaByNama(peserta)
+
+	c.HTML(http.StatusOK, "peserta.html", gin.H{
+		"title":   "Peserta Diurutkan Berdasarkan Nama",
+		"peserta": peserta,
+	})
 }
 
 func tampilKursus(c *gin.Context) {
-	c.HTML(http.StatusOK, "kursus.html", gin.H{"title": "Data Kursus", "kursus": appData.Kursus})
+
+	kursus, err := getAllKursus()
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.HTML(http.StatusOK, "kursus.html", gin.H{
+		"title":  "Data Kursus",
+		"kursus": kursus,
+	})
 }
 
 func formTambahKursus(c *gin.Context) {
-	c.HTML(http.StatusOK, "form_kursus.html", gin.H{"title": "Tambah Kursus", "bidang": appData.Bidang})
+
+	bidang, err := getAllBidang()
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.HTML(http.StatusOK, "form_kursus.html", gin.H{
+		"title":  "Tambah Kursus",
+		"bidang": bidang,
+	})
 }
 
 func tambahKursus(c *gin.Context) {
-	id := atoi(c.PostForm("id_kursus"))
-	if id == 0 || indexKursusByID(id) != -1 {
-		redirectWithError(c, "/kursus", "ID kursus tidak valid atau sudah dipakai")
+	idKursus := atoi(c.PostForm("id_kursus"))
+	namaKursus := strings.TrimSpace(c.PostForm("nama_kursus"))
+	idBidang := atoi(c.PostForm("id_bidang"))
+
+	if idKursus == 0 || namaKursus == "" || idBidang == 0 {
+		redirectWithError(c, "/kursus", "Data kursus tidak valid")
 		return
 	}
-	appData.Kursus = append(appData.Kursus, Kursus{
-		IDKursus:   id,
-		NamaKursus: strings.TrimSpace(c.PostForm("nama_kursus")),
-		IDBidang:   atoi(c.PostForm("id_bidang")),
+
+	err := insertKursus(Kursus{
+		IDKursus:   idKursus,
+		NamaKursus: namaKursus,
+		IDBidang:   idBidang,
 	})
-	saveData()
+
+	if err != nil {
+		redirectWithError(c, "/kursus", "ID kursus sudah dipakai atau bidang tidak valid")
+		return
+	}
+
 	c.Redirect(http.StatusSeeOther, "/kursus")
 }
 
 func hapusKursus(c *gin.Context) {
 	id := atoi(c.Param("id"))
-	idx := indexKursusByID(id)
-	if idx != -1 {
-		appData.Kursus = append(appData.Kursus[:idx], appData.Kursus[idx+1:]...)
-		saveData()
+
+	err := deleteKursus(id)
+
+	if err != nil {
+		redirectWithError(c, "/kursus", "Gagal menghapus kursus")
+		return
 	}
+
 	c.Redirect(http.StatusSeeOther, "/kursus")
 }
 
 func tampilBidang(c *gin.Context) {
-	c.HTML(http.StatusOK, "bidang.html", gin.H{"title": "Data Bidang Minat", "bidang": appData.Bidang})
+
+	bidang, err := getAllBidang()
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.HTML(http.StatusOK, "bidang.html", gin.H{
+		"title":  "Data Bidang Minat",
+		"bidang": bidang,
+	})
 }
 
 func formTambahBidang(c *gin.Context) {
@@ -379,90 +488,101 @@ func formTambahBidang(c *gin.Context) {
 }
 
 func tambahBidang(c *gin.Context) {
-	id := atoi(c.PostForm("id_bidang"))
-	if id == 0 || indexBidangByID(id) != -1 {
-		redirectWithError(c, "/bidang", "ID bidang tidak valid atau sudah dipakai")
+	idBidang := atoi(c.PostForm("id_bidang"))
+	namaBidang := strings.TrimSpace(c.PostForm("nama_bidang"))
+
+	if idBidang == 0 || namaBidang == "" {
+		redirectWithError(c, "/bidang", "ID bidang tidak valid atau nama kosong")
 		return
 	}
-	appData.Bidang = append(appData.Bidang, BidangMinat{
-		IDBidang:   id,
-		NamaBidang: strings.TrimSpace(c.PostForm("nama_bidang")),
+
+	err := insertBidang(BidangMinat{
+		IDBidang:   idBidang,
+		NamaBidang: namaBidang,
 	})
-	saveData()
+
+	if err != nil {
+		redirectWithError(c, "/bidang", "ID bidang sudah dipakai atau data tidak valid")
+		return
+	}
+
 	c.Redirect(http.StatusSeeOther, "/bidang")
 }
 
 func hapusBidang(c *gin.Context) {
 	id := atoi(c.Param("id"))
-	idx := indexBidangByID(id)
-	if idx != -1 {
-		appData.Bidang = append(appData.Bidang[:idx], appData.Bidang[idx+1:]...)
-		saveData()
+
+	err := deleteBidang(id)
+
+	if err != nil {
+		redirectWithError(c, "/bidang", "Gagal menghapus bidang")
+		return
 	}
+
 	c.Redirect(http.StatusSeeOther, "/bidang")
 }
 
 func statistik(c *gin.Context) {
-	totalAktif := 0
-	jumlahPerBidang := map[int]int{}
-	for _, p := range appData.Peserta {
-		if p.StatusAktif {
-			totalAktif++
-		}
-		jumlahPerBidang[p.IDBidang]++
+	totalPeserta, totalAktif, _, _, err := getDashboardStats()
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
 	}
+
+	bidang, err := getAllBidang()
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	jumlahPerBidang, err := getJumlahPesertaPerBidang()
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
 	c.HTML(http.StatusOK, "statistik.html", gin.H{
 		"title":           "Statistik Peserta",
-		"totalPeserta":    len(appData.Peserta),
+		"totalPeserta":    totalPeserta,
 		"totalAktif":      totalAktif,
+		"bidang":          bidang,
 		"jumlahPerBidang": jumlahPerBidang,
-		"bidang":          appData.Bidang,
 	})
 }
 
-func indexPesertaByID(id int) int {
-	for i, p := range appData.Peserta {
-		if p.IDPendaftaran == id {
-			return i
-		}
-	}
-	return -1
-}
-
-func indexKursusByID(id int) int {
-	for i, k := range appData.Kursus {
-		if k.IDKursus == id {
-			return i
-		}
-	}
-	return -1
-}
-
-func indexBidangByID(id int) int {
-	for i, b := range appData.Bidang {
-		if b.IDBidang == id {
-			return i
-		}
-	}
-	return -1
-}
-
 func namaBidangByID(id int) string {
-	for _, b := range appData.Bidang {
-		if b.IDBidang == id {
-			return b.NamaBidang
-		}
+	var nama string
+
+	err := db.QueryRow(
+		context.Background(),
+		"SELECT nama_bidang FROM bidang WHERE id_bidang = $1",
+		id,
+	).Scan(&nama)
+
+	if err != nil {
+		return "-"
 	}
-	return "-"
+
+	return nama
 }
 
 func namaKursusByID(id int) string {
-	for _, k := range appData.Kursus {
-		if k.IDKursus == id {
-			return k.NamaKursus
-		}
+	var nama string
+
+	err := db.QueryRow(
+		context.Background(),
+		"SELECT nama_kursus FROM kursus WHERE id_kursus = $1",
+		id,
+	).Scan(&nama)
+
+	if err != nil {
+		return "-"
 	}
-	return "-"
+
+	return nama
 }
 
 func selectionSortPesertaByID(data []Peserta) {

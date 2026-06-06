@@ -3,7 +3,7 @@
 ![Go](https://img.shields.io/badge/Go-1.24-blue)
 ![Gin](https://img.shields.io/badge/Gin-Framework-green)
 ![Status](https://img.shields.io/badge/Status-Completed-success)
-![Version](https://img.shields.io/badge/Version-v1.2.0-orange)
+![Version](https://img.shields.io/badge/Version-v2.0.0-orange)
 ![Deployment](https://img.shields.io/badge/Deployment-Live-success)
 
 ## Deskripsi
@@ -16,7 +16,7 @@ Aplikasi memungkinkan admin atau koordinator kursus untuk mengelola data peserta
 
 ## Live Demo
 
-🌐 https://YOUR-RAILWAY-URL.up.railway.app
+🌐 kursusin-web.up.railway.app
 
 ## Features
 
@@ -32,7 +32,8 @@ Aplikasi memungkinkan admin atau koordinator kursus untuk mengelola data peserta
 - Insertion Sort
 - Dashboard UI
 - Statistik Peserta
-- JSON Persistence
+- PostgreSQL Database
+- Railway Cloud Deployment
 - Live Deployment
 
 ## Tampilan Aplikasi
@@ -86,8 +87,8 @@ Aplikasi memungkinkan admin atau koordinator kursus untuk mengelola data peserta
 - [x] Selection Sort
 - [x] Insertion Sort
 - [x] Statistik Peserta
-- [x] Penyimpanan JSON
-- [x] Deployment
+- [x] PostgreSQL Integration
+- [x] Railway Deployment
 
 ## Fitur Utama
 
@@ -126,22 +127,43 @@ Aplikasi memungkinkan admin atau koordinator kursus untuk mengelola data peserta
 
 ---
 
+## Authentication
+
+Aplikasi dilengkapi sistem login berbasis session untuk membatasi akses ke halaman dashboard dan manajemen data.
+
+Default Login:
+
+Username: admin
+Password: admin123
+
+## Database
+
+KursusIn menggunakan PostgreSQL sebagai database utama yang di-host pada Railway.
+
+Tabel utama:
+
+- peserta
+- kursus
+- bidang
+
+Seluruh operasi CRUD, statistik, pencarian, dan pengurutan menggunakan data yang tersimpan di PostgreSQL.
+
 ## Teknologi
 
 - Go (Golang)
 - Gin Framework
+- PostgreSQL
+- Railway
 - HTML Template
 - Bootstrap 5
 - Bootstrap Icons
 - Custom CSS Dashboard
 - Session Cookie Authentication
-- JSON Storage
 
 ---
 
 ## Struktur Project
 
-```text
 kursusin-web/
 │
 ├── assets/
@@ -154,9 +176,6 @@ kursusin-web/
 │   ├── bidang-page.jpeg
 │   ├── bidang-form.jpeg
 │   └── statistik-page.jpeg
-│
-├── data/
-│   └── kursusin.json
 │
 ├── static/
 │   └── css/
@@ -174,18 +193,18 @@ kursusin-web/
 │   ├── form_bidang.html
 │   └── layout_head.html
 │
+├── database.go
 ├── main.go
 ├── go.mod
 ├── go.sum
 └── README.md
-```
 
 ## Struktur Project
 
 | Folder/File | Fungsi |
 |------------|---------|
 | assets | Screenshot dokumentasi aplikasi |
-| data | Penyimpanan data JSON |
+| database.go | Koneksi dan operasi PostgreSQL |
 | static | CSS dan aset statis |
 | templates | Tampilan HTML |
 | main.go | Routing, handler, algoritma, dan autentikasi |
@@ -262,9 +281,10 @@ Digunakan untuk mengurutkan peserta berdasarkan nama peserta secara alfabetis.
 
 ## Future Improvements
 
-- PostgreSQL Integration
 - Role-based Access Control
-- Deployment to Cloud Platform
+- Password Hashing (bcrypt)
+- Docker Containerization
+- Export Data (CSV/PDF)
 - Responsive Mobile Layout
 
 ## Lisensi
