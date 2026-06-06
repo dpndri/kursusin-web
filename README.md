@@ -164,8 +164,10 @@ Seluruh operasi CRUD, statistik, pencarian, dan pengurutan menggunakan data yang
 
 ## Struktur Project
 
+## Struktur Project
+
+```text
 kursusin-web/
-│
 ├── assets/
 │   ├── login-page.jpeg
 │   ├── dashboard-page.jpeg
@@ -198,6 +200,7 @@ kursusin-web/
 ├── go.mod
 ├── go.sum
 └── README.md
+```
 
 ## Struktur Project
 
